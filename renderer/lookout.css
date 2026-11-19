@@ -57,3 +57,6 @@ table.grid th{background:var(--bg-2);color:var(--text-2);font-weight:600}
 .swatches{display:flex;flex-wrap:wrap;gap:4px}
 .swatches button{width:22px;height:22px;border:1px solid var(--line-2);border-radius:3px;cursor:pointer;padding:0}
 .swatches button.on{outline:2px solid var(--accent);outline-offset:1px}
+.progress>div{display:block;height:100%;background:var(--accent)}
+table.grid tr.sel td{background:#3a3a3a}
+table.grid tbody tr{cursor:default}

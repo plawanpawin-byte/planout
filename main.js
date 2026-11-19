@@ -78,6 +78,8 @@ ipcMain.handle('app:info', () => ({ name: TITLE, version: app.getVersion() }));
 
 
 app.whenReady().then(() => {
+  // Hard network kill-switch: this app never talks to the internet.
+  session.defaultSession.webRequest.onBeforeRequest({ urls: ['http://*/*', 'https://*/*', 'ws://*/*', 'wss://*/*', 'ftp://*/*'] }, (_d, cb) => cb({ cancel: true }));
   session.defaultSession.setPermissionRequestHandler((_wc, perm, cb) => cb(false));
   createWindow();
 });
