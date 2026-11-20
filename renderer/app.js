@@ -258,7 +258,7 @@ document.addEventListener('keydown', (e) => {
   else if (e.ctrlKey && e.key.toLowerCase() === 'y') { e.preventDefault(); redo(); }
   else if (e.ctrlKey && e.key.toLowerCase() === 's') { e.preventDefault(); saveDoc(); }
   else if (e.ctrlKey && e.key.toLowerCase() === 'o') { e.preventDefault(); openDoc(); }
-  else if (e.key === 'Delete' && !e.target.matches('input,select,textarea')) del();
+  else if (e.key === 'Delete' && !document.querySelector('.modal-back') && !e.target.matches('input,select,textarea,button')) del();
 });
 
 // ---------- files ----------
