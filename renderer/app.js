@@ -263,8 +263,8 @@ document.addEventListener('keydown', (e) => {
 
 // ---------- files ----------
 const cleanTask = (t) => ({ id: String(t.id || uid()), name: String(t.name ?? ''), start: Number.isFinite(+t.start) ? Math.round(+t.start) : todayDay(), dur: clamp(Math.round(+t.dur || 0), 0, 3650), done: clamp(Math.round(+t.done || 0), 0, 100), dep: String(t.dep || ''), who: String(t.who || '') });
-async function openDoc() {
-  const f = (await window.host.openFiles({ filters: [['Planout plan', ['planout', 'json']]] }))[0]; if (!f) return;
+async function openDoc(dropped) {
+  const f = (dropped && dropped.data) ? dropped : (await window.host.openFiles({ filters: [['Planout plan', ['planout', 'json']]] }))[0]; if (!f) return;
   try { const d = JSON.parse(new TextDecoder().decode(f.data)); if (!Array.isArray(d.tasks)) throw new Error('Not a Planout file'); doc = { title: String(d.title || 'Untitled plan'), tasks: d.tasks.map(cleanTask) }; if (d.baseline && typeof d.baseline === 'object') { doc.baseline = {}; for (const [k, v] of Object.entries(d.baseline)) if (v && Number.isFinite(+v.start)) doc.baseline[String(k)] = { start: Math.round(+v.start), dur: clamp(Math.round(+v.dur || 0), 0, 3650) }; } fileName = f.name; sel = null; undoS = []; render(); }
   catch (e) { toast('Cannot open: ' + e.message); }
 }
@@ -297,3 +297,9 @@ async function exportPng() {
 })();
 render(); setTimeout(scrollToday, 50);
 window.addEventListener('resize', drawGantt);
+window.addEventListener('dragover', (e) => e.preventDefault());
+window.addEventListener('drop', async (e) => {
+  e.preventDefault();
+  const f = [...(e.dataTransfer?.files || [])].find((x) => /.(planout|json)$/i.test(x.name)); if (!f) { toast('Drop a .planout file to open it'); return; }
+  openDoc({ name: f.name, data: new Uint8Array(await f.arrayBuffer()) });
+});
