@@ -252,7 +252,7 @@ function addTask(ms) {
 }
 function del() { if (!sel) return; commit(); doc.tasks = doc.tasks.filter((t) => t.id !== sel); for (const t of doc.tasks) if (t.dep === sel) t.dep = ''; sel = null; render(); }
 function mv(d) { const i = doc.tasks.findIndex((t) => t.id === sel); const j = i + d; if (i < 0 || j < 0 || j >= doc.tasks.length) return; commit(); [doc.tasks[i], doc.tasks[j]] = [doc.tasks[j], doc.tasks[i]]; render(); }
-function newDoc() { if (doc.tasks.length && !confirm('Discard the current plan?')) return; doc = { title: 'Untitled plan', tasks: [] }; sel = null; undoS = []; redoS = []; fileName = ''; render(); }
+function newDoc() { if (doc.tasks.length && !confirm('Discard the current plan?')) return; doc = { title: 'Untitled plan', tasks: [] }; sel = null; undoS = []; savedSnap = snapshot(); redoS = []; fileName = ''; render(); }
 document.addEventListener('keydown', (e) => {
   if (e.ctrlKey && e.key.toLowerCase() === 'z') { e.preventDefault(); e.shiftKey ? redo() : undo(); }
   else if (e.ctrlKey && e.key.toLowerCase() === 'y') { e.preventDefault(); redo(); }
@@ -265,12 +265,12 @@ document.addEventListener('keydown', (e) => {
 const cleanTask = (t) => ({ id: String(t.id || uid()), name: String(t.name ?? ''), start: Number.isFinite(+t.start) ? Math.round(+t.start) : todayDay(), dur: clamp(Math.round(+t.dur || 0), 0, 3650), done: clamp(Math.round(+t.done || 0), 0, 100), dep: String(t.dep || ''), who: String(t.who || '') });
 async function openDoc(dropped) {
   const f = (dropped && dropped.data) ? dropped : (await window.host.openFiles({ filters: [['Planout plan', ['planout', 'json']]] }))[0]; if (!f) return;
-  try { const d = JSON.parse(new TextDecoder().decode(f.data)); if (!Array.isArray(d.tasks)) throw new Error('Not a Planout file'); doc = { title: String(d.title || 'Untitled plan'), tasks: d.tasks.map(cleanTask) }; if (d.baseline && typeof d.baseline === 'object') { doc.baseline = {}; for (const [k, v] of Object.entries(d.baseline)) if (v && Number.isFinite(+v.start)) doc.baseline[String(k)] = { start: Math.round(+v.start), dur: clamp(Math.round(+v.dur || 0), 0, 3650) }; } fileName = f.name; sel = null; undoS = []; render(); }
+  try { const d = JSON.parse(new TextDecoder().decode(f.data)); if (!Array.isArray(d.tasks)) throw new Error('Not a Planout file'); doc = { title: String(d.title || 'Untitled plan'), tasks: d.tasks.map(cleanTask) }; if (d.baseline && typeof d.baseline === 'object') { doc.baseline = {}; for (const [k, v] of Object.entries(d.baseline)) if (v && Number.isFinite(+v.start)) doc.baseline[String(k)] = { start: Math.round(+v.start), dur: clamp(Math.round(+v.dur || 0), 0, 3650) }; } fileName = f.name; sel = null; undoS = []; savedSnap = snapshot(); render(); }
   catch (e) { toast('Cannot open: ' + e.message); }
 }
 async function saveDoc() {
   const r = await window.host.saveFile({ name: 'plan.planout', filters: [['Planout plan', ['planout']]], data: new TextEncoder().encode(JSON.stringify(doc, null, 1)) });
-  if (r) { fileName = r.name; toast('Saved ' + r.name); renderStatus(); }
+  if (r) { savedSnap = snapshot(); fileName = r.name; toast('Saved ' + r.name); renderStatus(); }
 }
 async function exportCsv() {
   const q = (s) => '"' + String(s).replace(/"/g, '""') + '"';
@@ -303,3 +303,7 @@ window.addEventListener('drop', async (e) => {
   const f = [...(e.dataTransfer?.files || [])].find((x) => /.(planout|json)$/i.test(x.name)); if (!f) { toast('Drop a .planout file to open it'); return; }
   openDoc({ name: f.name, data: new Uint8Array(await f.arrayBuffer()) });
 });
+
+let savedSnap = null;
+setTimeout(() => { if (savedSnap === null) savedSnap = snapshot(); }, 0);
+window.addEventListener('beforeunload', (e) => { if (savedSnap !== null && snapshot() !== savedSnap) { e.preventDefault(); e.returnValue = ''; } });
