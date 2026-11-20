@@ -273,7 +273,7 @@ async function saveDoc() {
   if (r) { savedSnap = snapshot(); fileName = r.name; toast('Saved ' + r.name); renderStatus(); }
 }
 async function exportCsv() {
-  const q = (s) => '"' + String(s).replace(/"/g, '""') + '"';
+  const q = (s) => { s = String(s); if ('=+-@'.includes(s[0] || 'x') || s[0] === '\t' || s[0] === '\r') s = "'" + s; return '"' + s.replace(/"/g, '""') + '"'; };
   const rows = [['Task', 'Start', 'End', 'Days', 'Done %', 'After', 'Owner'].join(',')];
   doc.tasks.forEach((t) => rows.push([q(t.name), toIso(t.start), toIso(endOf(t)), t.dur, t.done, t.dep ? doc.tasks.findIndex((x) => x.id === t.dep) + 1 : '', q(t.who)].join(',')));
   const r = await window.host.saveFile({ name: 'plan.csv', filters: [['CSV', ['csv']]], data: new TextEncoder().encode('﻿' + rows.join('\r\n')) }); if (r) toast('Saved ' + r.name);
