@@ -1,7 +1,7 @@
 {
   "name": "planout",
   "productName": "Planout",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Plan projects with tasks, dependencies and a Gantt timeline.",
   "main": "main.js",
   "author": "Lookout",

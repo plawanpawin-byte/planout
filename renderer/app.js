@@ -51,13 +51,54 @@ function schedule() {
   }
 }
 function hasCycle(id, dep) { let cur = dep, n = 0; while (cur && n++ < 1000) { if (cur === id) return true; const p = byId(cur); cur = p ? p.dep : ''; } return false; }
+// critical path method: forward pass is the schedule itself, backward pass gives latest finish; slack = LF - EF
+let slackMap = {};
 function critical() {
-  // tasks on the longest chain ending at the project finish
-  const finish = Math.max(...doc.tasks.map(endOf), 0); const crit = new Set();
+  const finish = Math.max(...doc.tasks.map(endOf), 0), lf = {}, crit = new Set();
   const succ = (t) => doc.tasks.filter((x) => x.dep === t.id);
-  const chain = (t) => { const ss = succ(t); if (!ss.length) return endOf(t) === finish; let any = false; for (const s of ss) if (chain(s)) any = true; return any || endOf(t) === finish; };
-  for (const t of doc.tasks) { if (chain(t) && (t.dep || succ(t).length || endOf(t) === finish)) crit.add(t.id); }
+  const calc = (t, depth = 0) => { if (lf[t.id] != null) return lf[t.id]; if (depth > 500) return finish; const ss = succ(t); let v = finish; for (const x of ss) v = Math.min(v, calc(x, depth + 1) - Math.max(x.dur, 0)); lf[t.id] = v; return v; };
+  slackMap = {};
+  for (const t of doc.tasks) { const sl = calc(t) - endOf(t); slackMap[t.id] = sl; if (sl <= 0) crit.add(t.id); }
   return crit;
+}
+// resources: workload per owner
+function resources() {
+  const m = new Map();
+  for (const t of doc.tasks) { const w = (t.who || '').trim(); if (!w || t.dur === 0) continue; if (!m.has(w)) m.set(w, []); m.get(w).push(t); }
+  return [...m.entries()].map(([name, ts]) => {
+    const load = new Map(); let days = 0;
+    for (const t of ts) for (let d = t.start; d < endOf(t); d++) { load.set(d, (load.get(d) || 0) + 1); days++; }
+    const over = [...load.values()].filter((v) => v > 1).length;
+    const a = Math.min(...ts.map((t) => t.start)), b = Math.max(...ts.map(endOf));
+    return { name, tasks: ts, days, over, peak: Math.max(...load.values(), 0), a, b, load };
+  }).sort((x, y) => y.days - x.days);
+}
+function levelResources() {
+  commit();
+  let moved = 0;
+  const order = [...doc.tasks].sort((x, y) => x.start - y.start);
+  const busy = new Map();
+  for (const t of order) {
+    const w = (t.who || '').trim(); if (!w || t.dur === 0) continue;
+    const list = busy.get(w) || []; let guard = 0;
+    while (guard++ < 400 && list.some((o) => t.start < endOf(o) && endOf(t) > o.start)) { t.start = Math.max(t.start + 1, Math.min(...list.filter((o) => t.start < endOf(o) && endOf(t) > o.start).map(endOf))); moved++; }
+    list.push(t); busy.set(w, list); schedule();
+  }
+  render(); toast(moved ? 'Leveled: moved ' + moved + ' step(s)' : 'No overlaps to level');
+}
+function setBaseline() { commit(); doc.baseline = {}; for (const t of doc.tasks) doc.baseline[t.id] = { start: t.start, dur: t.dur }; render(); toast('Baseline saved'); }
+function clearBaseline() { if (!doc.baseline) return; commit(); delete doc.baseline; render(); toast('Baseline cleared'); }
+function openResources() {
+  const rs = resources(); const body = h('div', { style: 'min-width:560px;max-height:60vh;overflow:auto' });
+  if (!rs.length) body.append(h('div', { class: 'muted', text: 'Give tasks an owner and workload will show up here.' }));
+  for (const r of rs) {
+    const W = 520, n = r.b - r.a + 1, cw = Math.max(3, Math.min(14, W / n));
+    const svg = sv('svg', { width: Math.ceil(n * cw), height: 30, style: 'display:block;margin:4px 0' });
+    for (let i = 0; i < n; i++) { const v = r.load.get(r.a + i) || 0; if (v) svg.append(sv('rect', { x: i * cw, y: v > 1 ? 2 : 10, width: cw - 1, height: v > 1 ? 26 : 18, fill: v > 1 ? '#f0f0f0' : '#8a8a8a' })); }
+    body.append(h('div', { style: 'border-bottom:1px solid var(--line);padding:8px 0' }, h('div', { style: 'display:flex;gap:12px;align-items:baseline' }, h('b', { text: r.name }), h('span', { class: 'muted', text: r.tasks.length + ' tasks, ' + r.days + ' working days, peak ' + r.peak + ' at once' }), h('span', { style: 'margin-left:auto', text: r.over ? r.over + ' overloaded day(s)' : 'No overload' })), svg));
+  }
+  const back = h('div', { class: 'modal-back' }, h('div', { class: 'modal' }, h('h2', { text: 'Resources' }), body, h('div', { class: 'row', style: 'justify-content:flex-end' }, btn('Level overlaps', () => { back.remove(); levelResources(); }), btn('Close', () => back.remove(), 'primary'))));
+  document.body.append(back);
 }
 
 // ---------- shell ----------
@@ -76,7 +117,7 @@ const btn = (label, fn, cls = '') => h('button', { class: 'btn ' + cls, onclick:
 toolbar.append(btn('New', newDoc), btn('Open', openDoc), btn('Save', saveDoc, 'primary'), h('span', { class: 'sep' }),
   btn('Add task', () => addTask(false)), btn('Add milestone', () => addTask(true)), btn('Delete', del), btn('Move up', () => mv(-1)), btn('Move down', () => mv(1)), h('span', { class: 'sep' }),
   btn('Undo', undo), btn('Redo', redo), h('span', { class: 'sep' }),
-  btn('-', () => { dayW = clamp(dayW / 1.25, 6, 80); render(); }, 'icon'), btn('+', () => { dayW = clamp(dayW * 1.25, 6, 80); render(); }, 'icon'), btn('Today', scrollToday), h('span', { class: 'grow' }),
+  btn('-', () => { dayW = clamp(dayW / 1.25, 6, 80); render(); }, 'icon'), btn('+', () => { dayW = clamp(dayW * 1.25, 6, 80); render(); }, 'icon'), btn('Today', scrollToday), h('span', { class: 'sep' }), btn('Set baseline', setBaseline), btn('Clear baseline', clearBaseline), btn('Resources', openResources), h('span', { class: 'grow' }),
   btn('Export CSV', exportCsv), btn('Export PNG', exportPng));
 const style = h('style', { text: `
 .pl-head,.pl-row{display:grid;grid-template-columns:34px minmax(140px,1fr) 104px 56px 68px 66px 96px;align-items:center;gap:0;border-bottom:1px solid var(--line);height:32px;font-size:12px}
@@ -163,7 +204,8 @@ function drawGantt() {
       if (t.done > 0) g.append(sv('rect', { x, y: y + 7, width: (w * t.done) / 100, height: ROWH - 14, rx: 4, fill: isCrit ? '#e4e4e4' : '#a8a8a8', style: 'pointer-events:none' }));
       g.append(sv('rect', { x: x + w - 6, y: y + 7, width: 6, height: ROWH - 14, fill: 'transparent', style: 'cursor:ew-resize', 'data-role': 'resize' }));
     }
-    const lab = sv('text', { x: x + Math.max(t.dur, 0.5) * dayW + 8, y: y + ROWH / 2 + 4, fill: '#c8c8c8', 'font-size': 11, style: 'pointer-events:none' }); lab.textContent = t.name + (t.who ? '  -  ' + t.who : ''); g.append(lab);
+    if (doc.baseline && doc.baseline[t.id]) { const bl = doc.baseline[t.id], bx = (bl.start - a) * dayW; g.append(sv('rect', { x: bx, y: y + ROWH - 7, width: Math.max(bl.dur, 0.3) * dayW, height: 3, fill: '#909090', style: 'pointer-events:none' })); }
+    const lab = sv('text', { x: x + Math.max(t.dur, 0.5) * dayW + 8, y: y + ROWH / 2 + 4, fill: '#c8c8c8', 'font-size': 11, style: 'pointer-events:none' }); lab.textContent = t.name + (t.who ? '  -  ' + t.who : '') + (!isCrit && slackMap[t.id] > 0 ? '  (slack ' + slackMap[t.id] + 'd)' : ''); g.append(lab);
     svg.append(g);
   }
   // today
@@ -196,7 +238,7 @@ function renderStatus() {
   status.textContent = '';
   const fin = doc.tasks.length ? toIso(Math.max(...doc.tasks.map(endOf))) : '-';
   const avg = doc.tasks.length ? Math.round(doc.tasks.reduce((s, t) => s + (t.dur || 1) * t.done, 0) / doc.tasks.reduce((s, t) => s + (t.dur || 1), 0)) : 0;
-  status.append(h('span', { text: fileName || 'Untitled' }), h('span', { class: 'grow' }), h('span', { text: doc.tasks.length + ' tasks' }), h('span', { text: 'Finish ' + fin }), h('span', { text: avg + '% complete' }));
+  status.append(h('span', { text: fileName || 'Untitled' }), h('span', { class: 'grow' }), h('span', { text: doc.tasks.length + ' tasks' }), h('span', { text: 'Finish ' + fin }), h('span', { text: avg + '% complete' }), ...(doc.baseline ? [h('span', { text: 'Baseline ' + (() => { const bf = Math.max(...Object.values(doc.baseline).map((v) => v.start + v.dur), 0), v = Math.max(...doc.tasks.map(endOf), 0) - bf; return v === 0 ? 'on track' : (v > 0 ? '+' : '') + v + 'd'; })() })] : []));
 }
 
 // ---------- actions ----------
@@ -223,7 +265,7 @@ document.addEventListener('keydown', (e) => {
 const cleanTask = (t) => ({ id: String(t.id || uid()), name: String(t.name ?? ''), start: Number.isFinite(+t.start) ? Math.round(+t.start) : todayDay(), dur: clamp(Math.round(+t.dur || 0), 0, 3650), done: clamp(Math.round(+t.done || 0), 0, 100), dep: String(t.dep || ''), who: String(t.who || '') });
 async function openDoc() {
   const f = (await window.host.openFiles({ filters: [['Planout plan', ['planout', 'json']]] }))[0]; if (!f) return;
-  try { const d = JSON.parse(new TextDecoder().decode(f.data)); if (!Array.isArray(d.tasks)) throw new Error('Not a Planout file'); doc = { title: String(d.title || 'Untitled plan'), tasks: d.tasks.map(cleanTask) }; fileName = f.name; sel = null; undoS = []; render(); }
+  try { const d = JSON.parse(new TextDecoder().decode(f.data)); if (!Array.isArray(d.tasks)) throw new Error('Not a Planout file'); doc = { title: String(d.title || 'Untitled plan'), tasks: d.tasks.map(cleanTask) }; if (d.baseline && typeof d.baseline === 'object') { doc.baseline = {}; for (const [k, v] of Object.entries(d.baseline)) if (v && Number.isFinite(+v.start)) doc.baseline[String(k)] = { start: Math.round(+v.start), dur: clamp(Math.round(+v.dur || 0), 0, 3650) }; } fileName = f.name; sel = null; undoS = []; render(); }
   catch (e) { toast('Cannot open: ' + e.message); }
 }
 async function saveDoc() {
