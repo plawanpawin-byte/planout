@@ -146,13 +146,13 @@ function render() {
   const cols = '34px minmax(140px,1fr) 104px 56px 68px 66px 96px';
   doc.tasks.forEach((t, i) => {
     const row = h('div', { class: 'pl-row' + (sel === t.id ? ' sel' : '') + (t.dur === 0 ? ' ms' : ''), style: `grid-template-columns:${cols}`, 'data-id': t.id, onclick: () => { if (sel !== t.id) { sel = t.id; render(); } } });
-    const name = h('input', { class: 'nm', type: 'text', value: t.name, onfocus: commit, oninput: (e) => { t.name = e.target.value; drawGantt(); } });
-    const start = h('input', { class: 'd', type: 'text', value: toIso(t.start), onchange: (e) => { if (validIso(e.target.value)) { commit(); t.start = toDay(e.target.value); render(); } else { e.target.value = toIso(t.start); toast('Use YYYY-MM-DD'); } } });
-    const dur = h('input', { type: 'number', min: 0, value: t.dur, onchange: (e) => { commit(); t.dur = clamp(Math.round(+e.target.value || 0), 0, 3650); render(); } });
-    const done = h('input', { type: 'number', min: 0, max: 100, value: t.done, onchange: (e) => { commit(); t.done = clamp(Math.round(+e.target.value || 0), 0, 100); render(); } });
+    const name = h('input', { class: 'nm', type: 'text', 'aria-label': 'Task name', value: t.name, onfocus: commit, oninput: (e) => { t.name = e.target.value; drawGantt(); } });
+    const start = h('input', { 'aria-label': 'Start date', class: 'd', type: 'text', value: toIso(t.start), onchange: (e) => { if (validIso(e.target.value)) { commit(); t.start = toDay(e.target.value); render(); } else { e.target.value = toIso(t.start); toast('Use YYYY-MM-DD'); } } });
+    const dur = h('input', { 'aria-label': 'Duration in days', type: 'number', min: 0, value: t.dur, onchange: (e) => { commit(); t.dur = clamp(Math.round(+e.target.value || 0), 0, 3650); render(); } });
+    const done = h('input', { 'aria-label': 'Percent done', type: 'number', min: 0, max: 100, value: t.done, onchange: (e) => { commit(); t.done = clamp(Math.round(+e.target.value || 0), 0, 100); render(); } });
     const dep = h('select', { onchange: (e) => { const v = e.target.value; if (v && hasCycle(t.id, v)) { toast('That would create a loop'); e.target.value = t.dep; return; } commit(); t.dep = v; render(); } },
       h('option', { value: '', text: '-' }), ...doc.tasks.map((o, j) => (o === t ? null : h('option', { value: o.id, text: String(j + 1), selected: t.dep === o.id }))));
-    const who = h('input', { type: 'text', value: t.who, placeholder: '', onfocus: commit, oninput: (e) => { t.who = e.target.value; } });
+    const who = h('input', { 'aria-label': 'Assigned to', type: 'text', value: t.who, placeholder: '', onfocus: commit, oninput: (e) => { t.who = e.target.value; } });
     row.append(h('div', { text: String(i + 1), style: 'color:var(--text-2)' }), h('div', { style: 'padding:0' }, name), h('div', { style: 'padding:0' }, start), h('div', { style: 'padding:0' }, dur), h('div', { style: 'padding:0' }, done), h('div', { style: 'padding:0' }, dep), h('div', { style: 'padding:0' }, who));
     tBody.append(row);
   });
