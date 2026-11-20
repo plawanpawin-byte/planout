@@ -79,11 +79,11 @@ toolbar.append(btn('New', newDoc), btn('Open', openDoc), btn('Save', saveDoc, 'p
   btn('-', () => { dayW = clamp(dayW / 1.25, 6, 80); render(); }, 'icon'), btn('+', () => { dayW = clamp(dayW * 1.25, 6, 80); render(); }, 'icon'), btn('Today', scrollToday), h('span', { class: 'grow' }),
   btn('Export CSV', exportCsv), btn('Export PNG', exportPng));
 const style = h('style', { text: `
-.pl-head,.pl-row{display:grid;grid-template-columns:34px 1fr 98px 52px 52px 80px 90px;align-items:center;gap:0;border-bottom:1px solid var(--line);height:32px;font-size:12px}
+.pl-head,.pl-row{display:grid;grid-template-columns:34px minmax(140px,1fr) 104px 56px 68px 66px 96px;align-items:center;gap:0;border-bottom:1px solid var(--line);height:32px;font-size:12px}
 .pl-head{background:var(--bg-2);color:var(--text-2);height:44px;border-bottom:1px solid var(--line-2);padding-top:0}
 .pl-head>div,.pl-row>div{padding:0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pl-row.sel{background:#3a3a3a}
-.pl-row input,.pl-row select{width:100%;background:transparent;border:1px solid transparent;color:var(--text);padding:3px 4px;font:inherit;border-radius:3px}
+.pl-row input,.pl-row select{height:26px;width:100%;background:transparent;border:1px solid transparent;color:var(--text);padding:3px 4px;font:inherit;border-radius:3px}
 .pl-row input:hover,.pl-row select:hover{border-color:var(--line-2)}
 .pl-row input:focus,.pl-row select:focus{border-color:var(--accent);background:var(--bg)}
 .pl-row.ms .nm{font-style:italic}
@@ -100,9 +100,9 @@ function render() {
   tHead.textContent = '';
   tHead.style.display = 'grid';
   ['#', 'Task', 'Start', 'Days', 'Done %', 'After', 'Owner'].forEach((c) => tHead.append(h('div', { text: c })));
-  tHead.style.gridTemplateColumns = '34px 1fr 98px 52px 52px 80px 90px';
+  tHead.style.gridTemplateColumns = '34px minmax(140px,1fr) 104px 56px 68px 66px 96px';
   tBody.textContent = '';
-  const cols = '34px 1fr 98px 52px 52px 80px 90px';
+  const cols = '34px minmax(140px,1fr) 104px 56px 68px 66px 96px';
   doc.tasks.forEach((t, i) => {
     const row = h('div', { class: 'pl-row' + (sel === t.id ? ' sel' : '') + (t.dur === 0 ? ' ms' : ''), style: `grid-template-columns:${cols}`, 'data-id': t.id, onclick: () => { if (sel !== t.id) { sel = t.id; render(); } } });
     const name = h('input', { class: 'nm', type: 'text', value: t.name, onfocus: commit, oninput: (e) => { t.name = e.target.value; drawGantt(); } });

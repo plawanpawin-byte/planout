@@ -1,6 +1,6 @@
 <p align="center"><img src="screenshots/banner.png" alt="Planout" width="100%"></p>
 
-<p align="center"><b>Plans and Gantt timelines</b><br>Version 1.0.1 for Windows · Free · Offline · No account</p>
+<p align="center"><b>Plans and Gantt timelines</b><br>Version 1.0.2 for Windows · Free · Offline · No account</p>
 
 <p align="center"><a href="https://github.com/plawanpawin-byte/planout/releases/latest"><b>Download Planout</b></a> · <a href="https://github.com/plawanpawin-byte/Lookout">All Lookout apps</a></p>
 
@@ -11,6 +11,12 @@ Planout turns a list of tasks into a project plan. Give each task a start date, 
 **Made for:** Project managers, freelancers, event organisers, builders and students: anyone who needs to see what happens when, and who is doing it.
 
 ![Planout](screenshots/01-gantt-plan.png)
+
+**On this page:** [Screenshots](#see-it-in-action) · [Interface](#the-interface) · [Features](#everything-it-can-do) · [How to use it](#how-to-use-it) · [Shortcuts](#keyboard-shortcuts) · [Formats](#files-and-formats) · [Privacy](#private-by-design) · [Install](#install) · [Questions](#questions)
+
+## What is new in 1.0.2
+
+A refreshed interface: every toolbar button now has a clear line icon, the app's mark sits at the top left, controls share one height and spacing, panels line up in tidy grids, and the toolbar keeps every button reachable on smaller windows by switching less important buttons to icons.
 
 ## See it in action
 
@@ -43,6 +49,12 @@ The chart exported as a PNG for a status report or a slide.
 ![CSV output](screenshots/05-csv-output.png)
 
 Task names, dates, durations, progress and owners as a CSV file that opens in any spreadsheet.
+
+## The interface
+
+- **Top bar:** file buttons, Add task, Add milestone, delete and reorder, undo and redo, timeline zoom, Today, and Export CSV / PNG.
+- **Task table (left):** number, name, start, days, done %, the task it comes after, and owner, all editable in place.
+- **Timeline (right):** the Gantt chart with today marker, progress bars, milestones and dependency arrows. The status bar shows the finish date and overall progress.
 
 ## Everything it can do
 
@@ -122,5 +134,15 @@ Share the .planout file. There is no live co-editing because nothing goes online
 ## About Lookout
 
 Planout belongs to the **[Lookout](https://github.com/plawanpawin-byte/Lookout)** family: ten small, private Windows apps for documents and media, all with the same calm grey look and the same promise that your files stay yours. Install and update them together with the [Lookout launcher](https://github.com/plawanpawin-byte/lookout-launcher).
+
+- **[Pageout](https://github.com/plawanpawin-byte/pageout)**: read, annotate and sign pdfs
+- **[Chartout](https://github.com/plawanpawin-byte/chartout)**: flowcharts and diagrams
+- **[Branchout](https://github.com/plawanpawin-byte/branchout)**: mind maps and outlines
+- **[Frameout](https://github.com/plawanpawin-byte/frameout)**: screen design and prototypes
+- **[Cutout](https://github.com/plawanpawin-byte/cutout)**: video editing on a timeline
+- **[Shiftout](https://github.com/plawanpawin-byte/shiftout)**: convert and compress media
+- **[Castout](https://github.com/plawanpawin-byte/castout)**: record your screen
+- **[Mendout](https://github.com/plawanpawin-byte/mendout)**: repair damaged media
+- **[Tuneout](https://github.com/plawanpawin-byte/tuneout)**: record and edit audio
 
 Released under the MIT License.
