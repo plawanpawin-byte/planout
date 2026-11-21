@@ -1,8 +1,10 @@
-<p align="center"><img src="screenshots/banner.png" alt="Planout" width="100%"></p>
+<p align="center"><img src="screenshots/logo.png" alt="Planout" width="128"></p>
 
-<p align="center"><b>Plans and Gantt timelines</b><br>Version 1.0.2 for Windows · Free · Offline · No account</p>
+<h1 align="center">Planout</h1>
 
-<p align="center"><a href="https://github.com/plawanpawin-byte/planout/releases/latest"><b>Download Planout</b></a> · <a href="https://github.com/plawanpawin-byte/Lookout">All Lookout apps</a></p>
+<p align="center"><b>Plans and Gantt timelines</b><br>Version 1.0.14 for Windows · Free · Offline · No account</p>
+
+<p align="center"><a href="https://github.com/plawanpawin-byte/planout/releases/latest"><b>Download Planout</b></a> · <a href="https://github.com/plawanpawin-byte/lookout-launcher">Lookout launcher</a> · <a href="https://github.com/plawanpawin-byte/Lookout">All Lookout apps</a></p>
 
 ---
 
@@ -12,11 +14,51 @@ Planout turns a list of tasks into a project plan. Give each task a start date, 
 
 ![Planout](screenshots/01-gantt-plan.png)
 
-**On this page:** [Screenshots](#see-it-in-action) · [Interface](#the-interface) · [Features](#everything-it-can-do) · [How to use it](#how-to-use-it) · [Shortcuts](#keyboard-shortcuts) · [Formats](#files-and-formats) · [Privacy](#private-by-design) · [Install](#install) · [Questions](#questions)
+**On this page:** [In plain words](#in-plain-words) · [Who it is for](#who-it-is-for) · [Try it in 3 steps](#try-it-in-3-steps) · [Screenshots](#see-it-in-action) · [Features](#everything-it-can-do) · [How to use it](#how-to-use-it) · [Privacy](#private-by-design) · [Install](#install) · [Questions](#questions)
 
-## What is new in 1.0.2
+## In plain words
 
-A refreshed interface: every toolbar button now has a clear line icon, the app's mark sits at the top left, controls share one height and spacing, panels line up in tidy grids, and the toolbar keeps every button reachable on smaller windows by switching less important buttons to icons.
+Planout is a **project planner**. You write a list of tasks, give each one a start date, a length in days and an owner, and Planout draws them as horizontal bars on a **Gantt timeline**, the standard chart that project managers use to see what happens when.
+
+The useful part is **dependencies**. If task B cannot start until task A is finished, you link them. When A slips by two days, B and everything after it move automatically. You can also add **milestones** (important dates such as "Launch"), see a summary of the whole plan, and export the timeline as a picture or the task list as a CSV file that opens in Excel.
+
+**Not for:** Planout plans tasks and dates. It does not track budgets, hours worked or file attachments, and it does not sync between people.
+
+## Who it is for
+
+- **Project managers** and team leads who need a simple plan without a heavy tool.
+- **Small businesses** scheduling a launch, an event or a renovation.
+- **Students** planning a group project or a thesis.
+
+## Try it in 3 steps
+
+1. Add three tasks. Give them lengths and an owner.
+2. Link the second task to the first as a dependency and watch the bar move.
+3. Export the timeline image and share it with your team.
+
+## What is new in 1.0.14
+
+A new look inspired by Google's own tools (AI Studio, Colab, Gemini): a calm dark charcoal theme, rounded pill buttons, a soft blue accent and roomier spacing. The app icon is now a colour logo so you can find Planout at a glance in the Start menu and in the Lookout launcher. All screenshots below were taken again with the new look.
+
+## In plain words
+
+Planout is a **project planner**. You write a list of tasks, give each one a start date, a length in days and an owner, and Planout draws them as horizontal bars on a **Gantt timeline**, the standard chart that project managers use to see what happens when.
+
+The useful part is **dependencies**. If task B cannot start until task A is finished, you link them. When A slips by two days, B and everything after it move automatically. You can also add **milestones** (important dates such as "Launch"), see a summary of the whole plan, and export the timeline as a picture or the task list as a CSV file that opens in Excel.
+
+**Not for:** Planout plans tasks and dates. It does not track budgets, hours worked or file attachments, and it does not sync between people.
+
+## Who it is for
+
+- **Project managers** and team leads who need a simple plan without a heavy tool.
+- **Small businesses** scheduling a launch, an event or a renovation.
+- **Students** planning a group project or a thesis.
+
+## Try it in 3 steps
+
+1. Add three tasks. Give them lengths and an owner.
+2. Link the second task to the first as a dependency and watch the bar move.
+3. Export the timeline image and share it with your team.
 
 ## See it in action
 
@@ -116,7 +158,7 @@ Saves .planout files. Exports PNG and CSV. Dates are written year-month-day, for
 
 ## Install
 
-1. Open the [latest release](https://github.com/plawanpawin-byte/planout/releases/latest) and download the file named **Planout-Setup-** followed by the version number and **.exe**. You can also install it from the [Lookout launcher](https://github.com/${OWNER}/lookout-launcher), which keeps it up to date.
+1. Open the [latest release](https://github.com/plawanpawin-byte/planout/releases/latest) and download the file named **Planout-Setup-** followed by the version number and **.exe**. You can also install it from the [Lookout launcher](https://github.com/plawanpawin-byte/lookout-launcher), which keeps it up to date.
 2. Run the installer. It installs just for you, so it does not ask for administrator rights.
 3. Windows may show a blue **Windows protected your PC** screen because these installers are not signed with a paid certificate. Click **More info**, then **Run anyway**.
 4. Open Planout from the Start menu.
@@ -131,18 +173,40 @@ Not yet. Durations are counted in calendar days.
 **Can two people edit one plan?**  
 Share the .planout file. There is no live co-editing because nothing goes online.
 
+**What is a Gantt chart?**  
+A chart with tasks listed down the side and a calendar across the top. Each task is a bar from its start to its end.
+
+**What happens when I change a date?**  
+Any task that depends on it moves too, so the whole plan stays consistent.
+
+**Can I open the plan in Excel?**  
+Yes. Export the CSV and open it in Excel or any spreadsheet program.
+
+**What is a Gantt chart?**  
+A chart with tasks listed down the side and a calendar across the top. Each task is a bar from its start to its end.
+
+**What happens when I change a date?**  
+Any task that depends on it moves too, so the whole plan stays consistent.
+
+**Can I open the plan in Excel?**  
+Yes. Export the CSV and open it in Excel or any spreadsheet program.
+
 ## About Lookout
 
-Planout belongs to the **[Lookout](https://github.com/plawanpawin-byte/Lookout)** family: ten small, private Windows apps for documents and media, all with the same calm grey look and the same promise that your files stay yours. Install and update them together with the [Lookout launcher](https://github.com/plawanpawin-byte/lookout-launcher).
+Planout is part of **[Lookout](https://github.com/plawanpawin-byte/Lookout)**: ten small, private Windows apps for documents and media that share one look and one promise, that your files stay on your computer. Install and update them together with the [Lookout launcher](https://github.com/plawanpawin-byte/lookout-launcher).
 
-- **[Pageout](https://github.com/plawanpawin-byte/pageout)**: read, annotate and sign pdfs
-- **[Chartout](https://github.com/plawanpawin-byte/chartout)**: flowcharts and diagrams
-- **[Branchout](https://github.com/plawanpawin-byte/branchout)**: mind maps and outlines
-- **[Frameout](https://github.com/plawanpawin-byte/frameout)**: screen design and prototypes
-- **[Cutout](https://github.com/plawanpawin-byte/cutout)**: video editing on a timeline
-- **[Shiftout](https://github.com/plawanpawin-byte/shiftout)**: convert and compress media
-- **[Castout](https://github.com/plawanpawin-byte/castout)**: record your screen
-- **[Mendout](https://github.com/plawanpawin-byte/mendout)**: repair damaged media
-- **[Tuneout](https://github.com/plawanpawin-byte/tuneout)**: record and edit audio
+| | App | What it is for | Code |
+| --- | --- | --- | --- |
+| <img src="https://raw.githubusercontent.com/plawanpawin-byte/lookout-launcher/main/build/icon.png" width="32" alt="Lookout"> | **Lookout** | Install, open and update all the apps below | [GitHub](https://github.com/plawanpawin-byte/lookout-launcher) |
+| <img src="https://raw.githubusercontent.com/plawanpawin-byte/pageout/main/build/icon.png" width="32" alt="Pageout"> | **Pageout** | Read, annotate and sign PDFs | [GitHub](https://github.com/plawanpawin-byte/pageout) |
+| <img src="https://raw.githubusercontent.com/plawanpawin-byte/chartout/main/build/icon.png" width="32" alt="Chartout"> | **Chartout** | Flowcharts, org charts and diagrams | [GitHub](https://github.com/plawanpawin-byte/chartout) |
+| <img src="https://raw.githubusercontent.com/plawanpawin-byte/branchout/main/build/icon.png" width="32" alt="Branchout"> | **Branchout** | Mind maps and outlines | [GitHub](https://github.com/plawanpawin-byte/branchout) |
+| <img src="https://raw.githubusercontent.com/plawanpawin-byte/planout/main/build/icon.png" width="32" alt="Planout"> | **Planout** | Project plans and Gantt timelines | [GitHub](https://github.com/plawanpawin-byte/planout) |
+| <img src="https://raw.githubusercontent.com/plawanpawin-byte/frameout/main/build/icon.png" width="32" alt="Frameout"> | **Frameout** | App and web screen design with click-through prototypes | [GitHub](https://github.com/plawanpawin-byte/frameout) |
+| <img src="https://raw.githubusercontent.com/plawanpawin-byte/cutout/main/build/icon.png" width="32" alt="Cutout"> | **Cutout** | Video editing on a timeline | [GitHub](https://github.com/plawanpawin-byte/cutout) |
+| <img src="https://raw.githubusercontent.com/plawanpawin-byte/shiftout/main/build/icon.png" width="32" alt="Shiftout"> | **Shiftout** | Convert and compress video and audio, make GIFs | [GitHub](https://github.com/plawanpawin-byte/shiftout) |
+| <img src="https://raw.githubusercontent.com/plawanpawin-byte/castout/main/build/icon.png" width="32" alt="Castout"> | **Castout** | Record your screen | [GitHub](https://github.com/plawanpawin-byte/castout) |
+| <img src="https://raw.githubusercontent.com/plawanpawin-byte/mendout/main/build/icon.png" width="32" alt="Mendout"> | **Mendout** | Check and repair damaged video, audio, pictures and PDFs | [GitHub](https://github.com/plawanpawin-byte/mendout) |
+| <img src="https://raw.githubusercontent.com/plawanpawin-byte/tuneout/main/build/icon.png" width="32" alt="Tuneout"> | **Tuneout** | Record and edit audio | [GitHub](https://github.com/plawanpawin-byte/tuneout) |
 
 Released under the MIT License.
