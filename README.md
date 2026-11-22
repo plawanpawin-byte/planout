@@ -2,7 +2,7 @@
 
 <h1 align="center">Planout</h1>
 
-<p align="center"><b>Plans and Gantt timelines</b><br>Version 1.0.15 for Windows · Free · Offline · No account</p>
+<p align="center"><b>Plans and Gantt timelines</b><br>Version 1.0.16 for Windows · Free · Offline · No account</p>
 
 <p align="center"><a href="https://github.com/plawanpawin-byte/planout/releases/latest"><b>Download Planout</b></a> · <a href="https://github.com/plawanpawin-byte/lookout-launcher">Lookout launcher</a> · <a href="https://github.com/plawanpawin-byte/Lookout">All Lookout apps</a></p>
 
@@ -36,9 +36,9 @@ The useful part is **dependencies**. If task B cannot start until task A is fini
 2. Link the second task to the first as a dependency and watch the bar move.
 3. Export the timeline image and share it with your team.
 
-## What is new in 1.0.15
+## What is new in 1.0.16
 
-A new look inspired by Google's own tools (AI Studio, Colab, Gemini): a calm dark charcoal theme, rounded pill buttons, a soft blue accent and roomier spacing. The app icon is now a colour logo so you can find Planout at a glance in the Start menu and in the Lookout launcher. All screenshots below were taken again with the new look. The program now shows under its own name (not Electron) in Task Manager and the taskbar.
+**Fixed:** dragging a task bar to move it or its edge to change its length now works (the drag used to stop immediately). A new look inspired by Google's own tools (AI Studio, Colab, Gemini): a calm dark charcoal theme, rounded pill buttons, a soft blue accent and roomier spacing. The app icon is now a colour logo so you can find Planout at a glance in the Start menu and in the Lookout launcher. All screenshots below were taken again with the new look. The program now shows under its own name (not Electron) in Task Manager and the taskbar.
 
 ## In plain words
 

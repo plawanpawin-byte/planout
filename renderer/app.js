@@ -222,8 +222,8 @@ function ganttDown(ev) {
   const g = ev.target.closest('[data-id]'); if (!g) return;
   const t = byId(g.dataset.id); sel = t.id;
   const role = ev.target.dataset.role || (t.dur === 0 ? 'move' : null); if (!role) { render(); return; }
-  commit(); drag = { t, role, x: ev.clientX, start: t.start, dur: t.dur, moved: false }; ev.currentTarget.setPointerCapture(ev.pointerId);
-  ev.currentTarget.addEventListener('pointermove', ganttMove); ev.currentTarget.addEventListener('pointerup', ganttUp, { once: true });
+  commit(); drag = { t, role, x: ev.clientX, start: t.start, dur: t.dur, moved: false }; // drawGantt() replaces the <svg> on every move, so listen on the window (an svg listener died after the first move)
+  window.addEventListener('pointermove', ganttMove); window.addEventListener('pointerup', ganttUp, { once: true });
 }
 function ganttMove(ev) {
   if (!drag) return; const dd = Math.round((ev.clientX - drag.x) / dayW); drag.moved = drag.moved || dd !== 0;
@@ -232,7 +232,7 @@ function ganttMove(ev) {
   const st = rows[i]?.querySelector('input.d'); if (st) st.value = toIso(drag.t.start);
   const keep = ganttWrap.scrollLeft; drawGantt(); ganttWrap.scrollLeft = keep;
 }
-function ganttUp(ev) { ev.currentTarget.removeEventListener('pointermove', ganttMove); const d = drag; drag = null; if (d && !d.moved) undoS.pop(); const keep = ganttWrap.scrollLeft; render(); ganttWrap.scrollLeft = keep; }
+function ganttUp() { window.removeEventListener('pointermove', ganttMove); const d = drag; drag = null; if (d && !d.moved) undoS.pop(); const keep = ganttWrap.scrollLeft; render(); ganttWrap.scrollLeft = keep; }
 function scrollToday() { ganttWrap.scrollLeft = Math.max(0, (todayDay() - origin) * dayW - ganttWrap.clientWidth / 3); }
 function renderStatus() {
   status.textContent = '';
